@@ -17,9 +17,8 @@ def fractionalKnapsack(W, arr):
             finalvalue += profit
             print(f"{i + 1:>8} {profit:>8.2f} {weight:>8.2f} {taken_weight:>8.2f} {W:>20.2f}")
         else:
-            fraction = W / weight
             taken_weight = W
-            finalvalue += profit * fraction
+            finalvalue += profit * W / weight
             print(f"{i + 1:>8} {profit:>8.2f} {weight:>8.2f} {taken_weight:>8.2f} {0.00:>20.2f}")
             break
 
