@@ -25,7 +25,7 @@ key = int(input("Enter the number to search for: "))
 
 result = binary_search(arr, key)
 
-if result != -1:
-    print(f"Element found at index {result}")
+if result == -1:
+    print("Element not found")  
 else:
-    print("Element not found")
+    print(f"Element found at index {result}")

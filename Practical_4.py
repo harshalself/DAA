@@ -1,41 +1,42 @@
-# Main greedy function to solve the Fractional Knapsack problem
 def fractionalKnapsack(W, arr):
-
     # Sorting items based on the profit-to-weight ratio in descending order
     arr.sort(key=lambda x: x[0] / x[1], reverse=True)
 
     # Result (value in the knapsack)
     finalvalue = 0.0
 
+    # Print the table header
+    print(f"{'Item':>8} {'Value':>8} {'Weight':>8} {'Taken':>8} {'Remaining Weight':>20}")
+    print("-" * 60)
+
     # Looping through all items
-    for profit, weight in arr:
-        # If adding the entire item does not exceed capacity, add it
+    for i, (profit, weight) in arr:
         if weight <= W:
+            taken_weight = weight
             W -= weight
             finalvalue += profit
-        # If we can't add the entire item, add fractional part
+            print(f"{i + 1:>8} {profit:>8.2f} {weight:>8.2f} {taken_weight:>8.2f} {W:>20.2f}")
         else:
-            finalvalue += profit * W / weight
+            fraction = W / weight
+            taken_weight = W
+            finalvalue += profit * fraction
+            print(f"{i + 1:>8} {profit:>8.2f} {weight:>8.2f} {taken_weight:>8.2f} {0.00:>20.2f}")
             break
 
-    # Returning the final value
     return finalvalue
 
-
-# Driver Code
 if __name__ == "__main__":
+    W = int(input("Enter the total capacity of the knapsack: ")) 
+    n = int(input("Enter the number of items: "))  
     
-    W = int(input("Enter the total capacity of the knapsack: "))  # Total capacity of the knapsack
-    n = int(input("Enter the number of items: "))  # Number of items
-
     arr = []
-    # Taking input for each item (profit and weight)
+
     for i in range(n):
-        print(f"Enter profit and weight for item {i+1}:")
+        print(f"\nEnter profit and weight for item {i+1}:")
         profit = int(input("Profit: "))
         weight = int(input("Weight: "))
         arr.append((profit, weight))
 
     # Function call
     max_val = fractionalKnapsack(W, arr)
-    print(max_val)
+    print(f"\nMaximum value in the knapsack = {max_val:.2f}")

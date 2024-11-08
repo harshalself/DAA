@@ -1,53 +1,53 @@
-# A naive recursive implementation of 
-# optimal binary search tree problem 
-
-# A recursive function to calculate 
-# cost of optimal binary search tree 
-def optCost(freq, i, j):
-	
-	# Base cases 
-	if j < i:	 # no elements in this subarray 
-		return 0
-	if j == i:	 # one element in this subarray 
-		return freq[i] 
-	
-	# Get sum of freq[i], freq[i+1], ... freq[j] 
-	fsum = Sum(freq, i, j) 
-	
-	# Initialize minimum value 
-	Min = 999999999999
-	
-	# One by one consider all elements as 
-	# root and recursively find cost of 
-	# the BST, compare the cost with min
-	# and update min if needed 
-	for r in range(i, j + 1):
-		cost = (optCost(freq, i, r - 1) + optCost(freq, r + 1, j)) 
-		if cost < Min: 
-			Min = cost
-	
-	# Return minimum value 
-	return Min + fsum
-
-# The main function that calculates minimum 
-# cost of a Binary Search Tree. It mainly 
-# uses optCost() to find the optimal cost. 
-def optimalSearchTree(keys, freq, n):
-	
-    # Sorting keys and rearranging freq accordingly
-    combined = sorted(zip(keys, freq))  # Sort by keys
-    keys[:], freq[:] = zip(*combined)  # Unzip the sorted pairs back to keys and freq
+def optCost(freq, i, j, root):
+    # Base cases 
+    if j < i:  # no elements in this subarray
+        return 0
+    if j == i:  # one element in this subarray
+        root[i][j] = i
+        return freq[i]
     
-    return optCost(freq, 0, n - 1)
+    # Initialize the sum of frequencies in the range [i, j]
+    fsum = sum(freq[i:j + 1])
+    Min = float('inf')
+    
+    # One by one consider all elements as root and recursively find cost of BST
+    for r in range(i, j + 1):
+        cost = (optCost(freq, i, r - 1, root) + optCost(freq, r + 1, j, root))
+        
+        # Update minimum cost and store the root
+        if cost < Min:
+            Min = cost
+            root[i][j] = r
+    
+    return Min + fsum
 
-# A utility function to get sum of
-# array elements freq[i] to freq[j] 
-def Sum(freq, i, j):
-    return sum(freq[i:j + 1])
+def printTree(root, i, j, keys, position="Root"):
+    # Recursive function to print the structure of the Optimal BST
+    if j < i:
+        return
+    # Get the root index for the current subarray
+    r = root[i][j]
+    
+    print(f"{position}: {keys[r]}")
+    
+    # Print left subtree
+    printTree(root, i, r - 1, keys, "Left Child of " + str(keys[r]))
+    
+    # Print right subtree
+    printTree(root, r + 1, j, keys, "Right Child of " + str(keys[r]))
 
 # Driver Code
 if __name__ == '__main__':
-	keys = [10, 12, 20] 
-	freq = [34, 8, 50] 
-	n = len(keys) 
-	print("Cost of Optimal BST is", optimalSearchTree(keys, freq, n))
+    keys = [10, 12, 20, 40] 
+    freq = [34, 8, 50, 12]
+    n = len(keys)
+    
+    # Create a 2D array to store the root indices of the subtrees
+    root = [[-1 for _ in range(n)] for _ in range(n)]
+    
+    # Compute the cost and store the root indices
+    print("Cost of Optimal BST is", optCost(freq, 0, n - 1, root))
+    
+    # Print the structure of the Optimal BST
+    print("\nStructure of Optimal BST:")
+    printTree(root, 0, n - 1, keys)
